@@ -22,7 +22,7 @@ MongoClient.connect(url, (err, client) => {
   //   })
 
   db.collection('Users').insertOne({
-    name: 'joana',
+    name: 'Lucas Alves',
     age: 22,
     location: 'sao bernardo, brazil'
   }, (err, res) => {

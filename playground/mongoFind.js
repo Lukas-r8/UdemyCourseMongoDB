@@ -9,7 +9,7 @@ MongoClient.connect(url, (err, client) => {
 
   var db = client.db('todoApp')
 
-  db.collection('Users').find({name:'Lucas ALves'}).toArray((err, result) => {
+  db.collection('Users').find({name:'Lucas Alves'}).toArray((err, result) => {
     console.log('resultado:',result);
   })
 
