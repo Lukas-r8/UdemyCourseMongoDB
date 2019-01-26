@@ -8,30 +8,33 @@ const bodyParser = require('body-parser')
 
 
 var app = express();
-app.use(bodyParser.json())
+app.use(bodyParser.json());
 
 app.post('/todo', (req, res) => {
 
   var todo = new todoModel({
     text: req.body.text
-  })
+  });
 
 
   todo.save((err,stats) => {
     if (err) {
        console.log(err);
-       res.json(err)
+       res.status(400).json(err)
        return
-     }
+     };
 
-    console.log('stats..:',stats);
     res.json(stats)
-  })
+  });
 
-})
+});
 
 
-
+app.get('/todo', (req, res) => {
+  todoModel.find().then((data) => {
+    res.send(data);
+  }, (e) => res.send({status: 'NOK',error: e}));
+});
 
 
 
