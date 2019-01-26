@@ -24,7 +24,7 @@ app.post('/todo', (req, res) => {
        return
      }
 
-    console.log('stats:::',stats);
+    console.log('stats..:',stats);
     res.json(stats)
   })
 
@@ -37,7 +37,8 @@ app.post('/todo', (req, res) => {
 
 
 
-
 app.listen(3000, () => {
   console.log('listening on port 3000...');
 })
+
+module.exports.app = app
