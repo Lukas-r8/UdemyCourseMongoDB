@@ -4,10 +4,14 @@ const mongoose = require('mongoose')
 
 var todoModel = mongoose.model('Todo',{
   text: {
-    type: String
+    type: String,
+    required: true,
+    minlength: 1
   },
   completed: {
-    type: Boolean
+    type: Boolean,
+    default: false,
+    require: true
   },
   completedAt: {
     type: Number
