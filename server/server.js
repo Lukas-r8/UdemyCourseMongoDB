@@ -1,9 +1,9 @@
 
-var {mongoose} = require('./db/mongoose.js')
-var {todoModel} = require('./models/todo.js')
-var {userModel} = require('./models/users.js')
-const express = require('express')
-const bodyParser = require('body-parser')
+var {mongoose} = require('./db/mongoose.js');
+var {todoModel} = require('./models/todo.js');
+var {userModel} = require('./models/users.js');
+const express = require('express');
+const bodyParser = require('body-parser');
 
 
 
@@ -19,7 +19,6 @@ app.post('/todo', (req, res) => {
 
   todo.save((err,stats) => {
     if (err) {
-       console.log(err);
        res.status(400).json(err)
        return
      };
