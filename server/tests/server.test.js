@@ -48,37 +48,9 @@ describe('GET request', () => {
 
     request(app).get('/todo').expect(200).expect((data) => {
       expect(data.body.length).toBe(2);
-
     }).end(done)
 
+  });
 
 
-
-
-
-
-
-  })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-})
+});
