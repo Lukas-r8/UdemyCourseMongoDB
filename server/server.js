@@ -2,6 +2,7 @@
 var {mongoose} = require('./db/mongoose.js');
 var {todoModel} = require('./models/todo.js');
 var {userModel} = require('./models/users.js');
+const {ObjectID} = require('mongodb');
 const express = require('express');
 const bodyParser = require('body-parser');
 
@@ -35,6 +36,23 @@ app.get('/todo', (req, res) => {
   }, (e) => res.send({status: 'NOK',error: e}));
 });
 
+
+app.get('/todo/:id', (req, res) => {
+  var id = req.params.id;
+
+  if (!ObjectID.isValid(id)){res.status(404).send({message:'ID not Valid'})}
+
+  todoModel.findById(id).then((modelRes) => {
+
+    if (modelRes) {
+      res.status(200).send(modelRes)
+    } else {
+      res.status(404).send({message: 'user not found'})
+    };
+  }, (e) => {
+    res.status(400).send()
+  });
+});
 
 
 
