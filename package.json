@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start":"node server/server.js",
     "test": "mocha server/**/*.test.js",
     "test_watch": "nodemon --exec 'npm test'"
   },

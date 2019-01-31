@@ -6,6 +6,7 @@ const {ObjectID} = require('mongodb');
 const express = require('express');
 const bodyParser = require('body-parser');
 
+var port = process.env.PORT || 3000
 
 
 var app = express();
@@ -56,9 +57,8 @@ app.get('/todo/:id', (req, res) => {
 
 
 
-
-app.listen(3000, () => {
-  console.log('listening on port 3000...');
+app.listen(port, () => {
+  console.log(`listening on port ${port}...`);
 })
 
 module.exports.app = app
