@@ -3,8 +3,9 @@ const expect = require('expect')
 
 const {app} = require('./../server.js')
 const {todoModel} = require('./../models/todo.js')
+const {ObjectID} = require('mongodb');
 
-var arrayTodos = [{text: 'test one todos'},{text: 'test two todos'}]
+var arrayTodos = [{_id: new ObjectID() ,text: 'test one todos'},{_id: new ObjectID(), text: 'test two todos'}]
 
 beforeEach((done) => {
   todoModel.deleteMany({}).then(() =>{
@@ -43,7 +44,6 @@ describe('POST request', () => {
 
 describe('GET request', () => {
 
-
   it('should GET all todos', (done) => {
 
     request(app).get('/todo').expect(200).expect((data) => {
@@ -53,4 +53,41 @@ describe('GET request', () => {
   });
 
 
+});
+
+describe('GET todo/:id', () => {
+
+  it('should return todo doc', (done) => {
+    request(app).get(`/todo/${arrayTodos[0]._id.toHexString()}`)
+    .expect(200)
+    .expect((res) => {
+      expect(res.body.text).toBe(arrayTodos[0].text)
+    })
+    .end(done);
+  });
+
+  it('should return 404 if todo not found', (done) => {
+    request(app).get(`/todo/${new ObjectID().toHexString()}`)
+    .expect(404)
+    .expect((res) => {
+      var messageStr = JSON.parse(res.text).message
+      expect(messageStr).toBe('user not found')
+    })
+    .end(done);
+  });
+
+  it('should return 404 for non valid ID', (done) => {
+    var dummyNonValidId = '37466dehgbdgvybsycd'
+    request(app).get(`/todo/${dummyNonValidId}`)
+    .expect(404)
+    .expect((res) => {
+      var messageStr = JSON.parse(res.text).message
+      expect(ObjectID.isValid(dummyNonValidId)).toBe(false);
+      expect(messageStr).toBe('ID not Valid');
+
+    })
+    .end(done);
+
+
+  })
 });
