@@ -1,4 +1,4 @@
-
+require('./config/config.js')
 const {mongoose} = require('./db/mongoose.js');
 const {todoModel} = require('./models/todo.js');
 const {userModel} = require('./models/users.js');
@@ -9,7 +9,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 
-var port = process.env.PORT || 3000;
+var port = process.env.PORT;
 var app = express();
 
 
