@@ -5,7 +5,8 @@ const {app} = require('./../server.js')
 const {todoModel} = require('./../models/todo.js')
 const {ObjectID} = require('mongodb');
 
-var arrayTodos = [{_id: new ObjectID() ,text: 'test one todos'},{_id: new ObjectID(), text: 'test two todos'}]
+var arrayTodos = [{_id: new ObjectID() ,text: 'test one todos'},
+                  {_id: new ObjectID(), text: 'test two todos', completed: true, completedAt: 1000}]
 
 beforeEach((done) => {
   todoModel.deleteMany({}).then(() =>{
@@ -93,9 +94,6 @@ describe('GET todo/:id', () => {
   })
 });
 
-
-
-
 describe('DELETE todo/:id', () => {
   it('should delete a todo', (done) => {
     var id = arrayTodos[0]._id.toHexString()
@@ -124,4 +122,42 @@ describe('DELETE todo/:id', () => {
     request(app).delete(`/todo/123asd`).expect(404)
     .end(done);
   });
+});
+
+describe('PATCH todo/:id', () => {
+
+  it('should update the todo', (done) => {
+    var id = arrayTodos[0]._id.toHexString();
+    request(app).patch(`/todo/${id}`).send({completed: true, text: 'test one todos updated!'})
+    .expect(200)
+    .expect((res) => {
+      expect(res.body.text).not.toBe(arrayTodos[0].text);
+      expect(typeof res.body.completedAt).toBe('number');
+    }).end(done);
+
+  });
+
+
+
+
+
+  it('should clear completedAt when todo is not completed', (done) => {
+
+    var id = arrayTodos[1]._id.toHexString();
+
+    request(app).patch(`/todo/${id}`).send({completed: false}).expect(200)
+    .expect((res) => {
+      expect(res.body.completedAt).toBeFalsy();
+    }).end(done);
+
+  });
+
+
+
+
+
+
+
+
+
 })
