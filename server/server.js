@@ -92,7 +92,7 @@ app.patch('/todo/:id', (req, res) => {
     body.completedAt = null
   }
 
-  todoModel.findOneAndUpdate(id, {$set: body}, {new: true}).then((docs) => {
+  todoModel.findByIdAndUpdate(id, {$set: body}, {new: true}).then((docs) => {
     if (docs){
       res.send(docs);
     } else {
