@@ -105,6 +105,19 @@ app.patch('/todo/:id', (req, res) => {
 
 
 
+app.post('/users', (req, res) => {
+  var body = _.pick(req.body, ['email', 'password'])
+
+  var newUser = new userModel(body)
+
+  newUser.save().then((user) => {
+    return user.generateAuthToken()
+  }).then((token) => {
+    res.header('x-auth', token).send(newUser);
+  }).catch((e) => res.status(400).send(e));
+
+});
+
 app.listen(port, () => {
   console.log(`listening on port ${port}...`);
 })
