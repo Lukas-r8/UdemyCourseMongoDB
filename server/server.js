@@ -2,6 +2,7 @@ require('./config/config.js')
 const {mongoose} = require('./db/mongoose.js');
 const {todoModel} = require('./models/todo.js');
 const {userModel} = require('./models/users.js');
+const {authenticate} = require('./middleware/authenticate.js')
 
 const _ = require('lodash');
 const {ObjectID} = require('mongodb');
@@ -99,7 +100,7 @@ app.patch('/todo/:id', (req, res) => {
       res.status(404).send();
     }
   }).catch((e) => {
-    res.status(400).send();
+    res.sendStatus(400).send();
   });
 });
 
@@ -114,8 +115,15 @@ app.post('/users', (req, res) => {
     return user.generateAuthToken()
   }).then((token) => {
     res.header('x-auth', token).send(newUser);
-  }).catch((e) => res.status(400).send(e));
+  }).catch((e) => res.sendStatus(400).send(e));
 
+});
+
+
+
+app.get('/users/me', authenticate ,(req, res) => {
+  console.log('==========', req.user,'==============');
+  res.send(req.user)
 });
 
 app.listen(port, () => {

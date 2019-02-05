@@ -1,6 +1,7 @@
 const validator = require('validator');
 const mongoose = require('mongoose');
 const jws = require('jsonwebtoken');
+const ObjectID = require('mongodb').ObjectID;
 const _ = require('lodash');
 
 var userSchema = new mongoose.Schema({
@@ -34,6 +35,27 @@ var userSchema = new mongoose.Schema({
     }
   }]
 });
+
+userSchema.statics.findByToken = function(token) {
+  var User =  this;
+  var decoded;
+
+  try {
+    decoded = jws.verify(token, '123abc')
+  } catch (e) {
+    return new Promise((resolve, reject) => {
+      reject();
+    })
+  }
+
+  return User.findOne({
+    '_id': decoded.id,
+    'tokens.acess': 'auth',
+    'tokens.token': token
+  })
+
+
+}
 
 userSchema.methods.generateAuthToken = function(){
   var user = this;
