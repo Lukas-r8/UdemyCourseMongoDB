@@ -5,15 +5,10 @@ const {app} = require('./../server.js')
 const {todoModel} = require('./../models/todo.js')
 const {ObjectID} = require('mongodb');
 
-var arrayTodos = [{_id: new ObjectID() ,text: 'test one todos'},
-                  {_id: new ObjectID(), text: 'test two todos', completed: true, completedAt: 1000}]
+const {populateTodos, arrayTodos, arrayUsers, populateUsers} = require('./seeds/seeds.js')
 
-beforeEach((done) => {
-  todoModel.deleteMany({}).then(() =>{
-    todoModel.insertMany(arrayTodos);
-    done();
-  });
-})
+beforeEach(populateUsers);
+beforeEach(populateTodos);
 
 describe('POST request', () => {
   it('should create a new todo', (done) => {
@@ -152,12 +147,37 @@ describe('PATCH todo/:id', () => {
 
   });
 
+});
+
+describe('GET /users/me', () => {
+
+  it('should return user if authenticated', (done) => {
+    request(app).get('/users/me').set('x-auth', arrayUsers[0].tokens[0].token).expect(200).expect((res) => {
+      expect(res.body._id).toBe(arrayUsers[0]._id.toHexString());
+      expect(res.body.email).toBe(arrayUsers[0].email);
+    }).end(done);
+  });
+
+  it('should return 401 if not authenticated', (done) => {
+      request(app).get('/users/me').set('x-auth', 'anyTokenValue').expect(401).expect((res) => {
+        expect(Object.keys(res.body).length).toBe(0);
+      }).end(done);
+  });
+
+});
 
 
+describe('POST /users', () => {
+  it('should create a user', (done) => {
+    
+  })
 
+  it('should return validation errors if request is invalid', (done) => {
 
+  })
 
+  it('should not create user if email is in use', (done) => {
 
+  })
 
-
-})
+});

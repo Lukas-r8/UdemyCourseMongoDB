@@ -1,6 +1,6 @@
 const validator = require('validator');
 const mongoose = require('mongoose');
-const jws = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 const ObjectID = require('mongodb').ObjectID;
 const _ = require('lodash');
 const bcrypt = require('bcryptjs');
@@ -26,7 +26,7 @@ var userSchema = new mongoose.Schema({
     minlength: 6
   },
   tokens: [{
-    acess: {
+    access: {
     type: String,
     required: true
     },
@@ -42,7 +42,7 @@ userSchema.statics.findByToken = function(token) {
   var decoded;
 
   try {
-    decoded = jws.verify(token, '123abc')
+    decoded = jwt.verify(token, '123abc')
   } catch (e) {
     return new Promise((resolve, reject) => {
       reject();
@@ -51,7 +51,7 @@ userSchema.statics.findByToken = function(token) {
 
   return User.findOne({
     '_id': decoded.id,
-    'tokens.acess': 'auth',
+    'tokens.access': 'auth',
     'tokens.token': token
   })
 
@@ -61,10 +61,10 @@ userSchema.statics.findByToken = function(token) {
 userSchema.methods.generateAuthToken = function(){
   var user = this;
 
-  var acess = 'auth'
-  var token = jws.sign({id: user._id.toHexString(), acess}, '123abc').toString()
+  var access = 'auth'
+  var token = jwt.sign({id: user._id.toHexString(), access}, '123abc').toString()
 
-  user.tokens = user.tokens.concat([{acess, token}]);
+  user.tokens = user.tokens.concat([{access, token}]);
 
   return user.save().then(() => {
     return token
@@ -83,7 +83,7 @@ userSchema.pre('save', function(next){
   var user = this;
 
   if (user.isModified('password')){
-    bcrypt.genSalt(14, (err, salt) => {
+    bcrypt.genSalt(10, (err, salt) => {
       bcrypt.hash(user.password, salt , (err, hash) => {
         user.password = hash
         next();
